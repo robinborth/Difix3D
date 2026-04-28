@@ -34,17 +34,17 @@ class PairedDataset(torch.utils.data.Dataset):
             print("Error loading image:", input_img, output_img)
             return self.__getitem__(idx + 1)
 
-        img_t = F.to_tensor(img_t)
+        img_t = F.to_tensor(input_img)
         img_t = F.resize(img_t, self.image_size)
         img_t = F.normalize(img_t, mean=[0.5], std=[0.5])
 
-        output_t = F.to_tensor(output_t)
+        output_t = F.to_tensor(output_img)
         output_t = F.resize(output_t, self.image_size)
         output_t = F.normalize(output_t, mean=[0.5], std=[0.5])
 
         if ref_img is not None:
             ref_img = Image.open(ref_img)
-            ref_t = F.to_tensor(ref_t)
+            ref_t = F.to_tensor(ref_img)
             ref_t = F.resize(ref_t, self.image_size)
             ref_t = F.normalize(ref_t, mean=[0.5], std=[0.5])
         

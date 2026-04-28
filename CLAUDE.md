@@ -99,5 +99,4 @@ Both expect data laid out as `DATA_DIR/{SCENE_ID}/{colmap, images, images_2, ima
 
 - `src/model.py` adds `src/` to `sys.path` so intra-`src` imports use bare names (`from model import ...`, `from mv_unet import UNet2DConditionModel`). Keep that pattern when adding modules under `src/`.
 - The two UNet sources (`diffusers` vs local `src/mv_unet.py`) are selected by the `mv_unet` flag on `Difix` and chosen automatically in `inference_difix.py` based on whether `--ref_image` is given. If you change the multi-view layout (the `V` axis), update both `forward` in `src/model.py` and the corresponding paths in `src/pipeline_difix.py`.
-- `src/dataset.py` currently has a bug: lines 37-49 reference `img_t` / `output_t` / `ref_t` before assignment (the first call on each should be on `input_img` / `output_img` / `ref_img`). Fix when touching dataset code.
 - Checkpoints saved by `Difix.save_model` contain only LoRA + skip params; loading requires the same SD-turbo base, so don't change which base model is referenced without bumping the checkpoint format.
