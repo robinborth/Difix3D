@@ -1,0 +1,14 @@
+# path to root directory of the repo
+root_dir: /rhome/rborth/project/Difix3D
+# central data/checkpoint/output bucket for this project (per CLAUDE.md)
+data_root: /cluster/angmar/rborth/difix3d
+# datasets (training manifests, scene folders) live here
+data_dir: ${paths.data_root}/data
+# pretrained / project-trained checkpoints
+checkpoint_dir: ${paths.data_root}/checkpoints
+# logging / experiment outputs
+log_dir: ${paths.data_root}/logs
+# resolved per run by hydra (overridden via hydra.run.dir / hydra.sweep.dir below)
+run_dir: ${paths.log_dir}/${run_mode}/${now:%Y-%m-%d}/${now:%H-%M-%S}_${task_name}
+work_dir: ${hydra:runtime.cwd}
+output_dir: ${hydra:runtime.output_dir}

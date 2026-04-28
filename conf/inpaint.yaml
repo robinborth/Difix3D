@@ -1,0 +1,23 @@
+# config for scripts/inpaint.py
+defaults:
+  - paths: base
+  - hydra: base
+  - _self_
+  - compute: development
+
+task_name: ${hydra:job.name}
+experiment: ${hydra:job.override_dirname}
+
+base_prompt: ???
+inpaint_prompt: ???
+bbox: ???                 # "x0,y0,x1,y1"
+base_image: null
+method: all               # kontext | blended_latent | pixel_composite | all
+model_name: flux.2-klein-4b
+width: 768
+height: 768
+num_steps: null           # falls back to FLUX2_MODEL_INFO defaults
+guidance: null
+seed: 42
+feather: 16
+output_dir: null

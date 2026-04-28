@@ -35,3 +35,4 @@ include = ["difix3d"]
 
 [project.entry-points.'nerfstudio.method_configs']
 difix3d = 'difix3d.difix3d_config:difix3d_method'
+splatfacto-da3 = 'difix3d.splatfacto_da3_config:splatfacto_da3_method'

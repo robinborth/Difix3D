@@ -1,0 +1,19 @@
+# @package _global_
+defaults:
+  - paths: base
+  - hydra: base
+  - compute: development
+  - _self_
+
+task_name: run_da3_garden
+run_mode: ???
+experiment: ${hydra:job.override_dirname}
+tags:
+  - ${run_mode}
+  - ${task_name}
+
+data_dir: ${paths.root_dir}/data/garden/images_4
+out_dir: ${paths.output_dir}
+model_id: depth-anything/DA3-GIANT-1.1
+n_views: 12
+process_res: 504

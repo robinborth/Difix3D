@@ -1,0 +1,27 @@
+# singlerun settings
+run:
+  dir: ${paths.log_dir}/${run_mode}/${now:%Y-%m-%d}/${now:%H-%M-%S}_${task_name}
+
+# multirun settings
+sweep:
+  dir: ${paths.log_dir}/${run_mode}/${now:%Y-%m-%d}/${now:%H-%M-%S}_${task_name}
+  subdir: ${experiment}
+
+# logging settings
+job_logging:
+  formatters:
+    simple:
+      format: '%(asctime)s %(message)s'
+      datefmt: '[%Y-%m-%d %H:%M:%S]'
+  handlers:
+    file:
+      filename: ${hydra.runtime.output_dir}/${task_name}.log
+
+# keep override-dirname tidy (these knobs shouldn't pollute the run name)
+job:
+  config:
+    override_dirname:
+      exclude_keys:
+        - task_name
+        - run_mode
+        - compute

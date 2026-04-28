@@ -1,0 +1,25 @@
+# @package _global_
+defaults:
+  - paths: base
+  - hydra: base
+  - compute: development
+  - _self_
+
+task_name: inference_difix
+run_mode: ???
+experiment: ${hydra:job.override_dirname}
+tags:
+  - ${run_mode}
+  - ${task_name}
+
+input_image: ???
+ref_image: null
+height: 576
+width: 1024
+prompt: ???
+model_name: null
+model_path: null
+output_dir: ${paths.output_dir}
+seed: 42
+timestep: 199
+video: false

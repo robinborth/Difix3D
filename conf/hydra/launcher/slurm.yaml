@@ -1,0 +1,27 @@
+_target_: hydra_plugins.hydra_submitit_launcher.submitit_launcher.SlurmLauncher
+# resources
+timeout_min: 1440  # 24h
+cpus_per_task: 10
+mem_gb: 90
+partition: rtx_a6000_submit
+gpus_per_node: 1
+tasks_per_node: 1
+nodes: 1
+# bookkeeping
+submitit_folder: ${hydra.sweep.dir}/.submitit/%j
+name: ${task_name}
+qos: null
+comment: null
+constraint: null
+exclude: null
+gres: null
+cpus_per_gpu: null
+gpus_per_task: null
+mem_per_gpu: null
+mem_per_cpu: null
+account: null
+signal_delay_s: 120
+max_num_timeout: 0
+additional_parameters: {}
+array_parallelism: 256
+setup: null

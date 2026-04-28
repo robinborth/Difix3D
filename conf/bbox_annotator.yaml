@@ -1,0 +1,15 @@
+# config for scripts/bbox_annotator.py
+defaults:
+  - paths: base
+  - hydra: base
+  - _self_
+  - compute: development
+
+task_name: ${hydra:job.name}
+experiment: ${hydra:job.override_dirname}
+
+image: ???
+out_dir: null              # default: data/bbox_<ts>
+port: 8765
+host: 127.0.0.1
+no_browser: false

@@ -1,0 +1,17 @@
+# @package _global_
+# Submit a single-GPU slurm job via submitit. Use with `--multirun` (or run_mode=gpu compute=gpu)
+# or via a sweep. Example:
+#   python src/train_difix.py -m compute=gpu tracker_run_name=foo dataset_path=...
+defaults:
+  - override /hydra/launcher: slurm
+
+run_mode: gpu
+
+hydra:
+  mode: MULTIRUN
+  launcher:
+    timeout_min: 1440
+    gpus_per_node: 1
+    cpus_per_task: 10
+    mem_gb: 90
+    partition: rtx_a6000_submit

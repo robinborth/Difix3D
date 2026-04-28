@@ -1,0 +1,78 @@
+# @package _global_
+defaults:
+  - paths: base
+  - hydra: base
+  - compute: development
+  - _self_
+
+# bookkeeping
+seed: null
+task_name: train_difix
+run_mode: ???
+experiment: ${hydra:job.override_dirname}
+tags:
+  - ${run_mode}
+  - ${task_name}
+  - ${now:%Y-%m-%d}_${now:%H-%M-%S}__${task_name}
+
+# loss weights
+lambda_lpips: 1.0
+lambda_l2: 1.0
+lambda_gram: 1.0
+gram_loss_warmup_steps: 2000
+
+# dataset
+dataset_path: ???
+train_image_prep: resized_crop_512
+test_image_prep: resized_crop_512
+prompt: null
+
+# eval / logging
+eval_freq: 100
+num_samples_eval: 100
+viz_freq: 100
+tracker_project_name: difix
+tracker_run_name: ???
+
+# model
+pretrained_model_name_or_path: null
+revision: null
+variant: null
+tokenizer_name: null
+lora_rank_vae: 4
+timestep: 199
+mv_unet: false
+
+# training
+output_dir: ${paths.output_dir}
+cache_dir: null
+resolution: 512
+train_batch_size: 4
+num_training_epochs: 10
+max_train_steps: 10000
+checkpointing_steps: 500
+gradient_accumulation_steps: 1
+gradient_checkpointing: false
+learning_rate: 5.0e-6
+lr_scheduler: constant
+lr_warmup_steps: 500
+lr_num_cycles: 1
+lr_power: 1.0
+
+# dataloader / optim
+dataloader_num_workers: 0
+adam_beta1: 0.9
+adam_beta2: 0.999
+adam_weight_decay: 1.0e-2
+adam_epsilon: 1.0e-8
+max_grad_norm: 1.0
+allow_tf32: false
+
+# accelerate / misc
+report_to: wandb
+mixed_precision: bf16
+enable_xformers_memory_efficient_attention: false
+set_grads_to_none: false
+
+# resume from a checkpoint dir or .pkl
+resume: null

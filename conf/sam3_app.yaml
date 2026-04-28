@@ -1,0 +1,14 @@
+# config for scripts/sam3_app.py
+defaults:
+  - paths: base
+  - hydra: base
+  - _self_
+  - compute: development
+
+task_name: ${hydra:job.name}
+experiment: ${hydra:job.override_dirname}
+
+host: 0.0.0.0
+port: 7860
+model_id: facebook/sam3
+out_dir: null              # default: OUT_DIR_DEFAULT in script

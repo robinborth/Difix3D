@@ -1,0 +1,3 @@
+# @package _global_
+# Local interactive run on the current node — no slurm submission.
+run_mode: development

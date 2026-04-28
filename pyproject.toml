@@ -1,0 +1,8 @@
+[project]
+name = "difix3d-src"
+version = "0.0.0"
+description = "Difix3D source package (makes `src` importable as a top-level module)"
+requires-python = ">=3.9"
+
+[tool.setuptools.packages.find]
+include = ["src", "src.*", "examples", "examples.*"]

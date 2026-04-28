@@ -4,4 +4,7 @@ __pycache__/
 .claude/
 /data
 /outputs
+/output
+/logs
 /third_party
+*.egg-info/

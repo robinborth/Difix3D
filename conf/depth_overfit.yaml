@@ -1,0 +1,25 @@
+# config for scripts/depth_overfit.py
+defaults:
+  - paths: base
+  - hydra: base
+  - _self_
+  - compute: development
+
+task_name: ${hydra:job.name}
+experiment: ${hydra:job.override_dirname}
+
+input_image: ???
+prompt: "a cinematic photograph with the same composition, dramatic lighting"
+model_name: flux.2-klein-4b
+steps: 200
+lr: 1e-4
+batch_size: 1
+trainable: small
+sample_every: 50
+sample_steps: null
+sample_guidance: null
+sample_seed: 0
+width: null
+height: null
+seed: 1234
+output_dir: output/depth_overfit

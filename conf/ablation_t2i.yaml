@@ -1,0 +1,12 @@
+# config for scripts/ablation_t2i.py
+defaults:
+  - paths: base
+  - hydra: base
+  - _self_
+  - compute: development
+
+task_name: ${hydra:job.name}
+experiment: ${hydra:job.override_dirname}
+
+only: null                  # if set, only run this model_name from FLUX2_MODEL_INFO
+output_root: output

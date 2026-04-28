@@ -1,0 +1,19 @@
+# @package _global_
+defaults:
+  - paths: base
+  - hydra: base
+  - compute: development
+  - _self_
+
+task_name: run_quickstart
+run_mode: ???
+experiment: ${hydra:job.override_dirname}
+tags:
+  - ${run_mode}
+  - ${task_name}
+
+input_path: ${paths.root_dir}/assets/example_input.png
+ref_path: ${paths.root_dir}/assets/example_ref.png
+output_dir: ${paths.output_dir}
+prompt: remove degradation
+timestep: 199

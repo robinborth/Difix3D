@@ -1,0 +1,17 @@
+# config for scripts/sam3_segment.py
+defaults:
+  - paths: base
+  - hydra: base
+  - _self_
+  - compute: development
+
+task_name: ${hydra:job.name}
+experiment: ${hydra:job.override_dirname}
+
+image: ???
+prompt: ???
+out: output/sam3
+model_id: facebook/sam3
+score_threshold: 0.3
+mask_threshold: 0.5
+device: cuda               # falls back to cpu in script if cuda unavailable

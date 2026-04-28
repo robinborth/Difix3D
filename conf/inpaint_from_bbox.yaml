@@ -1,0 +1,20 @@
+# config for scripts/inpaint_from_bbox.py
+defaults:
+  - paths: base
+  - hydra: base
+  - _self_
+  - compute: development
+
+task_name: ${hydra:job.name}
+experiment: ${hydra:job.override_dirname}
+
+input_dir: ???
+output_dir: null
+method: kontext            # kontext | blended_latent | pixel_composite | all
+model_name: flux.2-klein-4b
+max_side: 1024
+feather: 8
+num_steps: null
+guidance: null
+seed: 42
+prompt: null               # if null, falls back to metadata.json prompt
