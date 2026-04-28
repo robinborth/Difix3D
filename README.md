@@ -213,6 +213,49 @@ python src/inference_difix.py \
     --timestep 199
 ```
 
+## FLUX.2 inpainting + SAM3 (local extension)
+
+This fork bundles a FLUX.2-based inpainting stack alongside Difix. The intent
+is to use it for distractor removal / scene editing on training views that
+later feed into the Difix3D refinement loop. The two stacks are self-contained
+today — they do not yet auto-call each other.
+
+Layout:
+
+- `src/flux2/` — FLUX.2 inference (model, sampling, AE, text encoders).
+- `src/sam3/` — shared `Sam3Segmenter` used by every SAM3 entry point.
+- `scripts/bbox_annotator.py`, `scripts/sam3_app.py` — browser annotators.
+- `scripts/sam3_segment.py` — one-shot SAM3 CLI.
+- `scripts/inpaint.py` / `inpaint_from_bbox.py` / `inpaint_sam3.py` — three
+  inpainting strategies (kontext, blended-latent, pixel-composite) driven by
+  a synthesized base, a bbox, or a SAM3 mask respectively.
+- `conf/*.yaml` — Hydra configs for every script above.
+- `docs/sam3.md` — design notes for the SAM3 module.
+
+All scripts run as `PYTHONPATH=src python scripts/<name>.py …` and accept
+Hydra overrides (e.g. `seed=7 method=kontext`). FLUX.2 weights pull from
+gated `black-forest-labs/FLUX.2-*` HF repos; SAM3 from `facebook/sam3`.
+
+Verified runs (Klein 4B, A6000):
+
+```bash
+PYTHONPATH=src python scripts/sam3_segment.py \
+    image=data/DSC07956.JPG prompt=vase out=outputs/sam3
+
+PYTHONPATH=src python scripts/inpaint_from_bbox.py \
+    input_dir=data/bbox_<ts> output_dir=outputs/inpaint_bbox \
+    method=kontext model_name=flux.2-klein-4b max_side=768
+
+PYTHONPATH=src python scripts/inpaint_sam3.py \
+    image=data/DSC07956.JPG mask=data/sam3_<ts>/mask.png \
+    inpaint_prompt="empty wooden garden table" method=all \
+    width=768 height=512 dilate=12 feather=8
+```
+
+The FLUX.2 stack has its own Python deps (torch 2.8, transformers 4.56,
+Qwen3 weights) that are heavier than Difix's — use a dedicated env
+(`flux2-depth` here) when running these scripts.
+
 ## Acknowledgements
 
 Our work is built upon the following projects:
