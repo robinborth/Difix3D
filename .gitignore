@@ -1,6 +1,7 @@
 __pycache__/
 *.pyc
 .vscode/
+.claude/
 /data
 /outputs
 /third_party
