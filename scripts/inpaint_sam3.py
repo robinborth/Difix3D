@@ -22,17 +22,13 @@ Annotation folder layout (matches scripts/sam3_app.py output):
 
 Usage:
     PYTHONPATH=src python scripts/inpaint_sam3.py \\
-        --annotation_dir data/sam3_DSC07956_20260428_144157 \\
-        --inpaint_prompt "empty wooden garden table, no objects on it, leafy hedge background" \\
-        --method all \\
-        --width 1024 --height 768 \\
-        --dilate 12 --feather 8 \\
-        --seed 7
+        annotation_dir=data/sam3_DSC07956_20260428_144157 \\
+        inpaint_prompt="empty wooden garden table, no objects on it, leafy hedge background" \\
+        method=all width=1024 height=768 dilate=12 feather=8 seed=7
 
 Or pass image+mask directly:
     PYTHONPATH=src python scripts/inpaint_sam3.py \\
-        --image data/foo.jpg --mask data/foo_mask.png \\
-        --inpaint_prompt "..."
+        image=data/foo.jpg mask=data/foo_mask.png inpaint_prompt="..."
 """
 
 from __future__ import annotations
@@ -288,7 +284,29 @@ def main(
     print(f"done -> {out_dir}", flush=True)
 
 
-if __name__ == "__main__":
-    from fire import Fire
+import hydra  # noqa: E402
+from omegaconf import DictConfig  # noqa: E402
 
-    Fire(main)
+
+@hydra.main(version_base=None, config_path="../conf", config_name="inpaint_sam3")
+def hydra_main(cfg: DictConfig) -> None:
+    main(
+        inpaint_prompt=cfg.inpaint_prompt,
+        annotation_dir=cfg.get("annotation_dir"),
+        image=cfg.get("image"),
+        mask=cfg.get("mask"),
+        method=cfg.method,
+        model_name=cfg.model_name,
+        width=cfg.width,
+        height=cfg.height,
+        num_steps=cfg.get("num_steps"),
+        guidance=cfg.get("guidance"),
+        seed=cfg.seed,
+        dilate=cfg.dilate,
+        feather=cfg.feather,
+        output_dir=cfg.get("output_dir"),
+    )
+
+
+if __name__ == "__main__":
+    hydra_main()

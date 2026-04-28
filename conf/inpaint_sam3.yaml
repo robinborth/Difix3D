@@ -1,0 +1,27 @@
+# config for scripts/inpaint_sam3.py
+defaults:
+  - paths: base
+  - hydra: base
+  - _self_
+  - compute: development
+
+task_name: ${hydra:job.name}
+experiment: ${hydra:job.override_dirname}
+
+# Either set annotation_dir (a folder produced by scripts/sam3_app.py) OR
+# set both image and mask explicitly. Leave the others null.
+annotation_dir: null
+image: null
+mask: null
+
+inpaint_prompt: ???
+method: all                # kontext | blended_latent | pixel_composite | all
+model_name: flux.2-klein-4b
+width: 1024
+height: 768
+num_steps: null            # falls back to FLUX2_MODEL_INFO defaults
+guidance: null
+seed: 42
+dilate: 12
+feather: 8
+output_dir: null
