@@ -1,0 +1,39 @@
+# config for scripts/preprocess_sam3_inpaint.py
+defaults:
+  - paths: base
+  - hydra: base
+  - _self_
+  - compute: development
+
+task_name: ${hydra:job.name}
+experiment: ${hydra:job.override_dirname}
+
+data_dir: ???                  # scene root containing images_subdir
+images_subdir: images          # source views
+masks_subdir: sam3_masks       # output: per-view binary masks
+inpainted_subdir: images_inpainted  # output: per-view inpainted RGB
+
+# subset selection
+view_stride: 1                 # take every Nth image (sorted by name)
+limit: null                    # cap to first N after striding (null = all)
+
+# idempotency
+overwrite_masks: false
+overwrite_inpaints: false
+
+# SAM3
+sam3_model_id: facebook/sam3
+sam3_prompt: ???
+sam3_score_threshold: 0.5
+sam3_mask_threshold: 0.5
+
+# Flux inpaint (kontext)
+model_name: flux.2-klein-4b
+inpaint_prompt: ???
+width: 1024
+height: 768
+num_steps: null
+guidance: null
+seed: 42
+dilate: 12
+feather: 8
