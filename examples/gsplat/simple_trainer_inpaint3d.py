@@ -263,6 +263,25 @@ def render_subset_to_dir(
         iio.imwrite(out_dir / f"{stem}.png", arr)
 
 
+def render_cached_to_dir(
+    splats: torch.nn.ParameterDict,
+    Ks: Sequence[Tensor],
+    cam_to_worlds: Sequence[Tensor],
+    image_sizes: Sequence[Tuple[int, int]],
+    stems: Sequence[str],
+    out_dir: Path,
+    cfg: Config,
+    device: str,
+) -> None:
+    """Like render_subset_to_dir but doesn't read from a Parser — works after
+    the parser has been shrunk by swap_image_paths_to_inpainted(drop_missing=True)."""
+    out_dir.mkdir(parents=True, exist_ok=True)
+    for K, c2w, sz, stem in zip(Ks, cam_to_worlds, image_sizes, stems):
+        img = render_camera_inproc(splats, K, c2w, sz, cfg, device)
+        arr = (img.cpu().numpy() * 255.0).round().clip(0, 255).astype(np.uint8)
+        iio.imwrite(out_dir / f"{stem}.png", arr)
+
+
 # ============================ training ============================
 
 
@@ -515,7 +534,9 @@ def main(local_rank: int, world_rank: int, world_size: int, cfg: Config) -> None
 
     subset_image_sizes: List[Tuple[int, int]] = []
     subset_Ks: List[Tensor] = []
+    subset_c2w: List[Tensor] = []
     subset_w2c: List[Tensor] = []
+    subset_stems: List[str] = []
     for idx in subset:
         cam_id = parser.camera_ids[idx]
         W, H = parser.imsize_dict[cam_id]
@@ -523,7 +544,9 @@ def main(local_rank: int, world_rank: int, world_size: int, cfg: Config) -> None
         c2w = torch.from_numpy(parser.camtoworlds[idx]).float()
         subset_image_sizes.append((W, H))
         subset_Ks.append(K)
+        subset_c2w.append(c2w)
         subset_w2c.append(torch.linalg.inv(c2w))
+        subset_stems.append(Path(parser.image_paths[idx]).stem)
 
     # ---- 4. render original ----
     render_subset_to_dir(splats, parser, subset, out_dir / "01_original", cfg, device)
@@ -573,13 +596,16 @@ def main(local_rank: int, world_rank: int, world_size: int, cfg: Config) -> None
         )
 
     # ---- 8. render after finetune ----
-    render_subset_to_dir(splats, parser, subset, out_dir / "03_after_finetune", cfg, device)
+    # Use cached cams/stems because parser.* may have been shrunk by the swap.
+    render_cached_to_dir(
+        splats, subset_Ks, subset_c2w, subset_image_sizes, subset_stems,
+        out_dir / "03_after_finetune", cfg, device,
+    )
 
     # ---- 9. compose 4-panel sheets ----
     panels_dir = out_dir / "comparison"
     panels_dir.mkdir(parents=True, exist_ok=True)
-    for idx in subset:
-        stem = Path(parser.image_paths[idx]).stem
+    for stem in subset_stems:
         try:
             orig = Image.open(out_dir / "01_original" / f"{stem}.png").convert("RGB")
             after_rm = Image.open(out_dir / "02_after_removal" / f"{stem}.png").convert("RGB")
